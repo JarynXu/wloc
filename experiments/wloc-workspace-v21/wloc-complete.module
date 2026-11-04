@@ -1,0 +1,16 @@
+#!name=WLOC Local Workspace v2.1 - Diagnostics
+#!desc=Integrated workspace candidate. Keep the old WLOC module installed but disable it before enabling this replacement. Local save/read/clear/restore and the matching response script. No claim of system location compatibility.
+
+[Script]
+WLOC Retired Settings = type=http-request,pattern=^https?:\/\/gs-loc(-cn)?\.apple\.com\/wloc-settings\/save(?:\?.*)?$,requires-body=0,max-size=0,timeout=5,script-path=https://raw.githubusercontent.com/JarynXu/wloc/e106b6d2a1fe618aa78e881c2cdc9c6e0d141c40/experiments/wloc-workspace-v21/dist/wloc-control.js,enable=true,argument=enabled=true&allowMissingOrigin=true
+WLOC Local Control v2 = type=http-request,pattern=^https:\/\/wloc-settings\.invalid\/wloc-control\/v2\/,requires-body=1,max-size=4096,timeout=10,script-path=https://raw.githubusercontent.com/JarynXu/wloc/e106b6d2a1fe618aa78e881c2cdc9c6e0d141c40/experiments/wloc-workspace-v21/dist/wloc-control.js,enable=true,argument=enabled=true&allowMissingOrigin=true
+WLOC Location Response v2 = type=http-response,pattern=^https?:\/\/gs-loc(-cn)?\.apple\.com\/clls\/wloc,requires-body=1,binary-body-mode=1,max-size=0,timeout=30,script-path=https://raw.githubusercontent.com/JarynXu/wloc/e106b6d2a1fe618aa78e881c2cdc9c6e0d141c40/experiments/wloc-workspace-v21/dist/wloc.js,enable=true,argument=LogLevel=off&logLevel=off
+
+[Rule]
+DOMAIN,wloc-settings.invalid,REJECT
+
+[MITM]
+hostname = %APPEND% wloc-settings.invalid, gs-loc.apple.com, gs-loc-cn.apple.com
+
+# Both script URLs are fixed to the reviewed v2.1 implementation commit.
+# Do not enable together with old WLOC or diagnostic modules. Do not remove REJECT.
