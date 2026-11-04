@@ -1,0 +1,14 @@
+#!name=WLOC Read-only Health Probe
+#!desc=Experimental diagnostic only. Fixed health GET; no coordinate storage or Apple location rewriting. Script/REJECT order and iOS TLS must still be verified.
+
+[Script]
+WLOC Read-only Health Probe = type=http-request,pattern=^https:\/\/wloc-settings\.invalid\/health$,requires-body=0,max-size=0,timeout=5,script-path=https://raw.githubusercontent.com/JarynXu/wloc/975cb112a374f7315c1d009d4117f1e02a4a402c/diagnostics/wloc-health/wloc-local-health.js,enable=true
+
+[Rule]
+DOMAIN,wloc-settings.invalid,REJECT
+
+[MITM]
+hostname = %APPEND% wloc-settings.invalid
+
+# Script is pinned to its reviewed commit; this does not claim iOS compatibility.
+# Retain REJECT. Do not weaken TLS validation or alter any Apple WLOC rule to make this pass.
